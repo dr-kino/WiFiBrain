@@ -10,6 +10,7 @@ IPAddress subnet(255,255,255,0);
 void setup()
 {
   Serial.begin(115200);
+  delay(1000);
   Serial.println();
 
   Serial.print("Setting soft-AP configuration ... ");
@@ -17,16 +18,13 @@ void setup()
 
   Serial.print("Setting soft-AP ... ");
   Serial.println(WiFi.softAP(ssid,password) ? "Ready" : "Failed!");
-  WiFi.softAP(ssid);
-  WiFi.softAP(ssid, password, channel, hidden, max_connection)
+  //WiFi.softAP(ssid);
+  //WiFi.softAP(ssid, password, channel, hidden, max_connection)
   
   Serial.print("Soft-AP IP address = ");
   Serial.println(WiFi.softAPIP());
 }
 
 void loop() {
-  Serial.print("[Server Connected] ");
-  Serial.println(WiFi.softAPIP());
-
-  delay(500);
+  //
 }
