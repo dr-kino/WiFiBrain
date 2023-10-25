@@ -1,12 +1,15 @@
 #include <ESP8266WiFi.h>
 
-const char *ssid = "AC-ESP8266";
+// Access point configuration
+const char *ssid = "AP-ESP8266";
 const char *password = "987654321";
 
+// Access point definitions (local IP, gateway, subnet)
 IPAddress local_IP(192,168,4,22);
 IPAddress gateway(192,168,4,9);
 IPAddress subnet(255,255,255,0);
 
+// Control variable and initialization
 boolean waitingDHCP=false;
 char last_mac[18];
 int selectedChannel = 1; // Default channel
@@ -20,10 +23,13 @@ void onNewStation(WiFiEventSoftAPModeStationConnected sta_info) {
   waitingDHCP=true;
 }
 
+// Setup
 void setup()
 {
+  // Control variable for event subscription
   static WiFiEventHandler e1;
 
+  // Serial baudrate and initialization
   Serial.begin(115200);
   delay(1000);
   Serial.println();
@@ -33,6 +39,8 @@ void setup()
   while (!Serial.available()) {
     delay(10);
   }
+
+  // Setting access point parameters
   selectedChannel = Serial.parseInt();
   Serial.print("Setting Wi-Fi channel to ");
   Serial.println(selectedChannel);
@@ -43,13 +51,11 @@ void setup()
 
   Serial.print("Setting soft-AP ... ");
   Serial.println(WiFi.softAP(ssid,password, selectedChannel) ? "Ready" : "Failed!");
-  //WiFi.softAP(ssid);
-  //WiFi.softAP(ssid, password, channel, hidden, max_connection)
   
   Serial.print("Soft-AP IP address = ");
   Serial.println(WiFi.softAPIP());
 
-  // Print the channel and SSID
+  // Printing the channel and SSID
   Serial.println();
   Serial.print("AP Channel: ");
   Serial.println(WiFi.channel());
@@ -62,9 +68,12 @@ void setup()
   e1 = WiFi.onSoftAPModeStationConnected(onNewStation);
 }
 
+// Main loop
 void loop() {
+  // DHCP handling
   if (waitingDHCP) {
     String cb;
+    // Control if there is valid device connected
     if (deviceIP(last_mac,cb)) {
       Serial.println("Ip address = " + cb);
     } else {
@@ -75,13 +84,16 @@ void loop() {
   delay(2000);
 }
 
+// Function to print new devices connected in the AP
 boolean deviceIP(char* mac_device, String &cb) {
   struct station_info *station_list = wifi_softap_get_station_info();
 
+  // Control loop to print new device connections
   while (station_list != NULL) {
     char station_mac[18] = {0}; sprintf(station_mac, "%02X:%02X:%02X:%02X:%02X:%02X", MAC2STR(station_list->bssid));
     String station_ip = IPAddress((&station_list->ip)->addr).toString();
 
+    // Cotrolling if the device list is empty
     if (strcmp(mac_device,station_mac)==0) {
       waitingDHCP=false;
       cb = station_ip;
@@ -90,6 +102,7 @@ boolean deviceIP(char* mac_device, String &cb) {
     station_list = STAILQ_NEXT(station_list, next);
   }
 
+  // Messaging indicating that DHCP not ready or bad MAC address
   wifi_softap_free_station_info();
   cb = "DHCP not ready or bad MAC address";
   return false;

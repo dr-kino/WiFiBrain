@@ -1,16 +1,21 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 
-const char* ssid = "AC-ESP8266";       // SSID of the Access Point you want to connect to
-const char* password = "987654321"; // Password of the Access Point
-const int webServerPort = 80;
+// Access point identification and password for authentication
+const char* ssid = "AC-ESP8266";        // SSID of the access point to connect
+const char* password = "987654321";     // Password of the Access Point
+const int webServerPort = 80;           // Port definition for the webserver
 
+// Instance of the webserver
 ESP8266WebServer server(webServerPort);
 
-float temperature = 0.0; // Initialize temperature
-float humidity = 0.0;    // Initialize humidity
+// Initial values for the sensors
+float temperature = 0.0;                // Initialize temperature
+float humidity = 0.0;                   // Initialize humidity
 
+// Setup
 void setup() {
+  // Serial baudrate and initialization
   Serial.begin(115200);
   delay(1000);
 
@@ -21,6 +26,7 @@ void setup() {
     Serial.println("Connecting to WiFi...");
   }
 
+  // Messages indicating that sensor connected to the AP
   Serial.println("Connected to WiFi");
   Serial.print("Local IP address: ");
   Serial.println(WiFi.localIP());
@@ -34,6 +40,7 @@ void setup() {
   server.begin();
 }
 
+// Main loop
 void loop() {
   server.handleClient();
 
@@ -41,10 +48,12 @@ void loop() {
   while (Serial.available() > 0) {
     char receivedChar = Serial.read();
     static String inputString = "";
+    // Fiding the end of the serial input, indicating end of command
     if (receivedChar == '\n') {
       // Split the received data into temperature and humidity values using a delimiter
       int delimiterPos = inputString.indexOf(',');
       if (delimiterPos != -1) {
+        // Adding temperature and humidity values, the delimeter/separator charracter is ","
         temperature = inputString.substring(0, delimiterPos).toFloat();
         humidity = inputString.substring(delimiterPos + 1).toFloat();
       }
