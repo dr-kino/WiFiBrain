@@ -1,8 +1,8 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 
-#define MY_SSID "telenet-D198A4A"
-#define MY_WIFI_PSWD "rU7Nusacerft"
+#define MY_SSID "my-ssid"
+#define MY_WIFI_PSWD "my-pswd"
 
 const char* ssid = MY_SSID;                   // Wi-Fi network SSID
 const char* password = MY_WIFI_PSWD;          // Wi-Fi network password
