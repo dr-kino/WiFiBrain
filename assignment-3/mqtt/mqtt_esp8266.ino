@@ -3,8 +3,8 @@
 
 // Update these with values suitable for your network.
 
-const char* ssid = "telenet-D198A4A";
-const char* password = "rU7Nusacerft";
+const char* ssid = "my-ssid";
+const char* password = "my-ssid-pswd";
 const char* mqtt_server = "test.mosquitto.org";
 
 WiFiClient espClient;
